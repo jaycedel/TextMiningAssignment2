@@ -1,0 +1,10 @@
+git clone <link>
+git status (cmd under folder) -checks for new changes
+
+git pull (enter) - to get all the changes done by the others
+
+git add . (enter) -adding all changes/files
+git commit -m "remarks"  - explanation of changes
+git push (enter) - all changes updates the github master folder
+
+
