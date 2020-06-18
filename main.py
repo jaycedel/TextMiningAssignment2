@@ -6,7 +6,7 @@ import nltk
 maleCount = 0
 femaleCount = 0
 
-path = "../blogs3" #FOLDER OF WHERE THE FILES ARE
+path = "../blogs2"  # FOLDER OF WHERE THE FILES ARE
 demographics = {}
 gender = {}
 age = {}
@@ -14,7 +14,8 @@ interest = {}
 zodiac = {}
 topics = {}
 
-#GET THE OBJECT OR THING ON THE BLOG POST AND RETURN THE OBJECT
+
+# GET THE OBJECT OR THING ON THE BLOG POST AND RETURN THE OBJECT
 def parseBlog(txt):
     for sent in nltk.sent_tokenize(txt):
         for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
@@ -22,11 +23,13 @@ def parseBlog(txt):
                 if chunk.label() in topics:
                     keyValue = topics[chunk.label()]
                     if keyValue is not None:
+                        # ADD THE VALUE LIST TO A PREVIOUSLY CREATED TOPIC WITH KEY chunk.label()
                         keyValue.append(' '.join(c[0] for c in chunk))
                         topics[chunk.label()] = keyValue
                 else:
-                    # CREATE A NEW DICTIONARY WITH A VALUE LIST
+                    # CREATE A NEW TOPIC KEY chunk.label() WITH VALUE COMING FROM chunk
                     topics[chunk.label()] = [' '.join(c[0] for c in chunk)]
+
 
 def parseFileName(filename):
     splittedFilename = filename.split(".")
@@ -56,6 +59,7 @@ def parseFileName(filename):
     currentBlogger['INTEREST'] = splittedFilename[3]
     return currentBlogger
 
+
 for filename in os.listdir(path):
     if not filename.endswith('.xml'):
         continue
@@ -65,12 +69,9 @@ for filename in os.listdir(path):
 
     # GET THE FULLNAME
     fullname = os.path.join(path, filename)
-    #print(fullname)
-
-    # GET CONTENT OF THE XML FILE
-    # https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in/42340744
-
     try:
+        # GET CONTENT OF THE XML FILE
+        # https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in/42340744
         with open(fullname, encoding="utf8", errors='ignore') as f:
             text = f.read()
 
@@ -83,15 +84,15 @@ for filename in os.listdir(path):
         decodedContent = decodedContent.replace("urlLink", "")
         tree = ET.fromstring(decodedContent)
 
-        #GET ALL POST ELEMENT TAGS
+        # GET ALL POST ELEMENT TAGS
         for elem in tree.iter():
             if elem.tag == 'post':
                 parseBlog(elem.text)
 
-        #DISPLAY THE CURRENT GENDER, AGE AND INTEREST
+        # DISPLAY THE CURRENT GENDER, AGE AND INTEREST
         print(currentBlogger)
 
-        #CHECK THE TOPIC AND SUBJECT ENTERED IN THE BLOG POST
+        # CHECK THE TOPIC AND SUBJECT ENTERED IN THE BLOG POST
         for keyTopic in topics:
             print(keyTopic, '->', topics[keyTopic])
 
