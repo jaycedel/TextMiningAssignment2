@@ -16,12 +16,17 @@ zodiac = {}
 #GET THE OBJECT OR THING ON THE BLOG POST AND RETURN THE OBJECT
 def parseBlog(txt):
     topics = {}
-    #print(txt)
     for sent in nltk.sent_tokenize(txt):
         for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
             if hasattr(chunk, 'label'):
-                topics[chunk.label()] = ' '.join(c[0] for c in chunk)
-
+                if chunk.label() in topics:
+                    keyValue = topics[chunk.label()]
+                    if keyValue is not None:
+                        keyValue.append(' '.join(c[0] for c in chunk))
+                        topics[chunk.label()] = keyValue
+                else:
+                    # CREATE A NEW DICTIONARY WITH A VALUE LIST
+                    topics[chunk.label()] = [' '.join(c[0] for c in chunk)]
     return topics
 
 def parseFileName(filename):
@@ -60,28 +65,28 @@ for filename in os.listdir(path):
     # GET CONTENT OF THE XML FILE
     # https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in/42340744
 
-    try:
-        with open(fullname, encoding="utf8", errors='ignore') as f:
-            text = f.read()
+    #try:
+    with open(fullname, encoding="utf8", errors='ignore') as f:
+        text = f.read()
 
-        decodedContent = html.unescape(text)
-        decodedContent = decodedContent.replace(" & ", " and ")
-        decodedContent = decodedContent.replace("&", "")
-        decodedContent = decodedContent.replace("<>", " ")
-        decodedContent = decodedContent.replace("&lt;", " ")
-        decodedContent = decodedContent.replace("&gt;", " ")
-        decodedContent = decodedContent.replace("urlLink", "")
-        tree = ET.fromstring(decodedContent)
-        for elem in tree.iter():
-            if elem.tag == 'post':
-                topics = parseBlog(elem.text)
-                for keyTopic in topics:
-                    print(keyTopic, '->', topics[keyTopic])
+    decodedContent = html.unescape(text)
+    decodedContent = decodedContent.replace(" & ", " and ")
+    decodedContent = decodedContent.replace("&", "")
+    decodedContent = decodedContent.replace("<>", " ")
+    decodedContent = decodedContent.replace("&lt;", " ")
+    decodedContent = decodedContent.replace("&gt;", " ")
+    decodedContent = decodedContent.replace("urlLink", "")
+    tree = ET.fromstring(decodedContent)
+    for elem in tree.iter():
+        if elem.tag == 'post':
+            topics = parseBlog(elem.text)
+            for keyTopic in topics:
+                print(keyTopic, '->', topics[keyTopic])
 
-    except Exception as e:
-        print("Unexpected error on " + fullname + ":", e)
-        #         raise
-        pass
+    # except Exception as e:
+    #     print("Unexpected error on " + fullname + ":", e)
+    #     #         raise
+    #     pass
 
 print(gender)
 print(age)
