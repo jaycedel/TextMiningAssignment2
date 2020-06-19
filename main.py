@@ -1,3 +1,5 @@
+#https://towardsdatascience.com/tf-idf-for-document-ranking-from-scratch-in-python-on-real-world-dataset-796d339a4089
+
 import os
 import xml.etree.ElementTree as ET
 import html.parser
