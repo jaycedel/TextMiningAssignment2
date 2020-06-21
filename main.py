@@ -1,4 +1,5 @@
 #https://towardsdatascience.com/tf-idf-for-document-ranking-from-scratch-in-python-on-real-world-dataset-796d339a4089
+#https://github.com/susanli2016/NLP-with-Python/blob/master/NER_NLTK_Spacy.ipynb
 
 import os
 import xml.etree.ElementTree as ET
@@ -32,6 +33,17 @@ def parseBlog(txt):
                     # CREATE A NEW TOPIC KEY chunk.label() WITH VALUE COMING FROM chunk
                     topics[chunk.label()] = [' '.join(c[0] for c in chunk)]
 
+#CLEAN TEXT CONTENTS
+def preProcessContent(text):
+    decodedContent = html.unescape(text)
+    decodedContent = decodedContent.replace(" & ", " and ")
+    decodedContent = decodedContent.replace("&", "")
+    decodedContent = decodedContent.replace("<>", " ")
+    decodedContent = decodedContent.replace("&lt;", " ")
+    decodedContent = decodedContent.replace("&gt;", " ")
+    decodedContent = decodedContent.replace("urlLink", "")
+    #decodedContent = decodedContent.upper()
+    return decodedContent
 
 def parseFileName(filename):
     splittedFilename = filename.split(".")
@@ -77,19 +89,13 @@ for filename in os.listdir(path):
         with open(fullname, encoding="utf8", errors='ignore') as f:
             text = f.read()
 
-        decodedContent = html.unescape(text)
-        decodedContent = decodedContent.replace(" & ", " and ")
-        decodedContent = decodedContent.replace("&", "")
-        decodedContent = decodedContent.replace("<>", " ")
-        decodedContent = decodedContent.replace("&lt;", " ")
-        decodedContent = decodedContent.replace("&gt;", " ")
-        decodedContent = decodedContent.replace("urlLink", "")
-        tree = ET.fromstring(decodedContent)
+        cleanText = preProcessContent(text)
+        tree = ET.fromstring(cleanText)
 
         # GET ALL POST ELEMENT TAGS
         for elem in tree.iter():
             if elem.tag == 'post':
-                parseBlog(elem.text)
+                parseBlog(elem.text.upper())  #MAKE TEXT UPPER
 
         # DISPLAY THE CURRENT GENDER, AGE AND INTEREST
         print(currentBlogger)
