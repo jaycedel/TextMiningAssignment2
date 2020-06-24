@@ -1,79 +1,140 @@
-#https://medium.com/@pemagrg/magic-of-tf-idf-202649d39c2f
-
-import pandas as pd
-import sklearn as sk
-import math
-import nltk
+from gensim.corpora import Dictionary
+from nltk import word_tokenize
 from nltk.corpus import stopwords
+import os
+import xml.etree.ElementTree as ET
+import html.parser
+from collections import defaultdict
+import itertools
+import numpy as np
 
-set(stopwords.words('english'))
-
-def computeTF(wordDict, doc):
-    tfDict = {}
-    corpusCount = len(doc)
-    for word, count in wordDict.items():
-        tfDict[word] = count / float(corpusCount)
-    return (tfDict)
-
-
-def computeIDF(docList):
-    idfDict = {}
-    N = len(docList)
-
-    idfDict = dict.fromkeys(docList[0].keys(), 0)
-    for word, val in idfDict.items():
-        idfDict[word] = math.log10(N / (float(val) + 1))
-
-    return (idfDict)
+# CLEAN TEXT CONTENTS REMOVING SPECIAL CHARACTERS WHICH CAUSE SOME XML PARSING, AND STOP WORDS
 
 
-def computeTFIDF(tfBow, idfs):
-    tfidf = {}
-    for word, val in tfBow.items():
-        tfidf[word] = val * idfs[word]
-    return (tfidf)
-
-def create_word_dict(total, sentence):
-    wordDict = dict.fromkeys(total, 0)
-    for word in sentence:
-        wordDict[word] += 1
-    return wordDict
-
-sentence1 = "Go until jurong point, crazy.. Available only in bugis n great world la e buffet... Cine there got amore wat..."
-sentence2 = "Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&C's apply 08452810075over18's"
-
-sentence1_list = nltk.word_tokenize(sentence1)
-sentence2_list = nltk.word_tokenize(sentence2)
-total = set(sentence1_list).union(set(sentence2_list))
-print('sentence 1 list')
-print(sentence1_list)
-print('sentence 2 list')
-print(sentence2_list)
-print("Total")
-print(total)
+def preProcessContent(text):
+    decodedContent = html.unescape(text)
+    decodedContent = decodedContent.replace(" & ", " ")
+    decodedContent = decodedContent.replace("&", "")
+    decodedContent = decodedContent.replace("<>", " ")
+    decodedContent = decodedContent.replace("&lt;", " ")
+    decodedContent = decodedContent.replace("&gt;", " ")
+    decodedContent = decodedContent.replace("urlLink", "")
 
 
-wordDictA = create_word_dict(total, sentence1_list)
-wordDictB = create_word_dict(total, sentence2_list)
 
-print(wordDictA)
-print()
-print(wordDictB)
+    return decodedContent
 
-tfFirst = computeTF(wordDictA, sentence1_list)
-tfSecond = computeTF(wordDictB, sentence2_list)
-print("TERM FREQUENCY OF SENTENCE1:\n", tfFirst)
-print()
-print("TERM FREQUENCY OF SENTENCE2:\n", tfSecond)
+#REPLACE NON TOPIC WORDS
+def cleanContent(text):
+    decodedContent = text.replace(" I ", " ")
+    decodedContent = decodedContent.replace(" MR ", " ")
+    decodedContent = decodedContent.replace(" the ", " ")
+    decodedContent = decodedContent.replace(".The ", " ")
+    decodedContent = decodedContent.replace("The", " ")
+    decodedContent = decodedContent.replace(" it ", " ")
+    decodedContent = decodedContent.replace("'s", " ")
+    decodedContent = decodedContent.replace("one", " ")
+    decodedContent = decodedContent.replace("'m", " ")
+    decodedContent = decodedContent.replace("via", " ")
+    decodedContent = decodedContent.replace("like", " ")
+    # REMOVE STOP WORDS  https://www.datacamp.com/community/tutorials/text-analytics-beginners-nltk
+    for sw in stop_words:
+        decodedContent = decodedContent.replace(' ' + sw + ' ', " ")
 
-idfs = computeIDF([wordDictA, wordDictB])
+    return decodedContent
 
-idfFirst = computeTFIDF(tfFirst, idfs)
-idfSecond = computeTFIDF(tfSecond, idfs)
-print(idfFirst)
-print()
-print(idfSecond)
+# SPLIT FILENAME AND RETURNS {'GENDER': 'FEMALE', 'AGE': 26, 'INTEREST': 'INTERNET'}
+def parseFileName(filename):
+    splittedFilename = filename.split(".")
+    return {'GENDER': splittedFilename[1].upper(), 'AGE': int(splittedFilename[2]),
+            'INTEREST': splittedFilename[3].upper()}
 
-# putting it in a dataframe
-idf = pd.DataFrame([idfFirst, idfSecond])
-idf.head()
+# https://www.tutorialspoint.com/gensim/gensim_creating_tf_idf_matrix.htm
+# https://honingds.com/blog/natural-language-processing-with-python/
+def parsePostBlog(classification, blogs):
+    tokenized_docs = [word_tokenize(doc) for doc in blogs]
+    dictionary = Dictionary(tokenized_docs)
+    bag_of_words_corpus = [dictionary.doc2bow(tokenized_doc) for tokenized_doc in tokenized_docs]
+
+    total_word_count = defaultdict(int)
+    for word_id, word_count in itertools.chain.from_iterable(bag_of_words_corpus):
+        total_word_count[word_id] += word_count
+
+    # Create a sorted list from the defaultdict: sorted_word_count
+    sorted_word_count = sorted(total_word_count.items(), key=lambda w: w[1], reverse=True)
+
+    # Print the top 1 words across all documents alongside the count
+    for word_id, word_count in sorted_word_count[:1]:
+        print(classification + " is talking about '" + str(dictionary.get(word_id)) + "', with " + str(word_count) + " occurence")
+
+
+def remove_punctuation(data):
+    symbols = "!\"#$%&()*+-./:;<=>?@[\]^_`{|}~\n"
+    for i in range(len(symbols)):
+        data = np.char.replace(data, symbols[i], ' ')
+        data = np.char.replace(data, "  ", " ")
+    data = np.char.replace(data, ',', '')
+    return data
+
+
+#START OF MAIN PROGRAM
+stop_words = set(stopwords.words('english'))
+path = "../blogs2"  # FOLDER OF WHERE THE FILES ARE
+
+blogs_male = ""
+blogs_female = ""
+blogs_below21 = ""
+blogs_above20 = ""
+blog_text = ""
+
+blogs = []
+blog_male_list = []
+blog_female_list = []
+blog_below21_list = []
+blog_above20_list = []
+
+
+for filename in os.listdir(path):
+    if not filename.endswith('.xml'):
+        continue
+
+    currentBlogger = parseFileName(filename)
+    # GET THE FULLNAME
+    fullname = os.path.join(path, filename)
+    try:
+        # GET CONTENT OF THE XML FILE
+        # https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in/42340744
+        with open(fullname, encoding="utf8", errors='ignore') as f:
+            text = f.read()
+
+        cleanText = preProcessContent(text)
+        tree = ET.fromstring(cleanText)
+
+        # GET ALL POST ELEMENT TAGS
+        for elem in tree.iter():
+            if elem.tag == 'post':
+                cleanPost = str(remove_punctuation(elem.text))
+                cleanPost = cleanContent(cleanPost)
+                blogs.append(cleanPost)
+                if currentBlogger['GENDER'] == 'MALE':
+                    blog_male_list.append(cleanPost)
+                if currentBlogger['GENDER'] == 'FEMALE':
+                    blog_female_list.append(cleanPost)
+                # Less Than 20 Counter
+                if currentBlogger['AGE'] <= 20:
+                    blog_below21_list.append(cleanPost)
+                # More Than 20 Counter
+                if currentBlogger['AGE'] > 20:
+                    blog_above20_list.append(cleanPost)
+
+    except Exception as e:
+        #print("Unexpected error on " + fullname + ":", e)
+        pass
+
+
+
+parsePostBlog("Everyone", blogs)
+parsePostBlog("Male", blog_male_list)
+parsePostBlog("Female", blog_male_list)
+parsePostBlog("Below 21", blog_below21_list)
+parsePostBlog("Above 20", blog_above20_list)

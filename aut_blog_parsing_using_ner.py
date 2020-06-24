@@ -68,9 +68,6 @@ def parseFileName(filename):
     else:
         zodiac[splittedFilename[4]] = 1
 
-    # currentBlogger = {'GENDER': splittedFilename[1].upper(), 'AGE': int(splittedFilename[2]),
-    #                   'INTEREST': splittedFilename[3].upper()}
-
     return {'GENDER': splittedFilename[1].upper(), 'AGE': int(splittedFilename[2]),
             'INTEREST': splittedFilename[3].upper()}
 
@@ -136,6 +133,7 @@ for filename in os.listdir(path):
     # GET THE FULLNAME
     fullname = os.path.join(path, filename)
 
+    print(currentBlogger)
     try:
         # GET CONTENT OF THE XML FILE
         # https://stackoverflow.com/questions/42339876/error-unicodedecodeerror-utf-8-codec-cant-decode-byte-0xff-in-position-0-in/42340744
@@ -151,7 +149,7 @@ for filename in os.listdir(path):
                 parseBlog(elem.text.upper())  # MAKE TEXT UPPER
 
         # CHECK THE TOPIC AND SUBJECT ENTERED IN THE BLOG POST
-        # DEBUGGIN PURPOSES
+        # DEBUGGING PURPOSES
         # for keyTopic in topics:
         #     print(keyTopic, '->', topics[keyTopic])
 
