@@ -1,3 +1,5 @@
+#https://towardsdatascience.com/tf-idf-for-document-ranking-from-scratch-in-python-on-real-world-dataset-796d339a4089
+
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
@@ -21,6 +23,7 @@ alpha = 0.3
 
 
 folders = [x[0] for x in os.walk(str(os.getcwd())+'/'+title+'/')]
+print(folders)
 folders[0] = folders[0][:len(folders[0])-1]
 
 dataset = []
