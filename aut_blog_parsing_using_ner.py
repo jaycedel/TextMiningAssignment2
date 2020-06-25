@@ -293,7 +293,7 @@ if above20_key_gsp:
     print('Location ' + str(FreqDist(above20_key_gsp).most_common(1).pop(0)[0]) + ' with '
           + str(FreqDist(above20_key_gsp).most_common(1).pop(0)[1]) + ' mention')
 
-if above20_key_facility:
+if above20_key_facilipty:
     print('Facility ' + str(FreqDist(above20_key_facility).most_common(1).pop(0)[0]) + ' with '
           + str(FreqDist(above20_key_facility).most_common(1).pop(0)[1]) + ' mention')
 
