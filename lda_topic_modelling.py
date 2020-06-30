@@ -3,6 +3,7 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 
+
 # apply transformation
 def lda_parse_post(posts):
     # the vectorizer object will be used to transform text to vector form
