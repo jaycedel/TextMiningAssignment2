@@ -3,12 +3,10 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 
-# the vectorizer object will be used to transform text to vector form
-vectorizer = CountVectorizer(max_df=0.9, min_df=25, token_pattern='\w+|\$[\d\.]+|\S+')
-
-
 # apply transformation
 def lda_parse_post(posts):
+    # the vectorizer object will be used to transform text to vector form
+    vectorizer = CountVectorizer(max_df=1, min_df=1, token_pattern='\w+|\$[\d\.]+|\S+')
 
     tf = vectorizer.fit_transform(posts).toarray()
 
@@ -21,8 +19,8 @@ def lda_parse_post(posts):
 
     model.fit(tf)
     no_top_words = 10
-
     topic_dict = {}
+    print(model.components_)
     for topic_idx, topic in enumerate(model.components_):
         topic_dict["Topic %d words" % (topic_idx)] = ['{}'.format(tf_feature_names[i])
                                                       for i in topic.argsort()[:-no_top_words - 1:-1]]
