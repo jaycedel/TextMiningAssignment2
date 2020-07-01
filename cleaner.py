@@ -11,12 +11,15 @@ my_punctuation = '!"$%&\'()*+,-./:;<=>?[\\]^_`{|}~•@'
 
 
 def clean_post(post, bigrams=True):
+
     post = post.lower()  # lower case
 
     # remove unwanted words
     post = post.replace("urllink", "")
     post = post.replace("time", "")
     post = post.replace("like", "")
+    post = post.replace("make", "")
+    post = post.replace("would", "")
 
     post = re.sub('[' + my_punctuation + ']+', ' ', post)  # strip punctuation
     post = re.sub('\s+', ' ', post)  # remove double spacing

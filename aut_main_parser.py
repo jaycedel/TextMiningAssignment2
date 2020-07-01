@@ -57,8 +57,8 @@ for filename in os.listdir(path):
                     blog_above20_list.append(cleanPost)
 
     except Exception as e:
-        print("Unexpected error on " + fullname + ":", e)
-        # pass
+        # print("Unexpected error on " + fullname + ":", e)
+        pass
 
 # lda_parse_post(blogs)
 
@@ -67,4 +67,6 @@ lda_gensim_parse_post("male", blog_male_list)
 lda_gensim_parse_post("female", blog_female_list)
 lda_gensim_parse_post("Below 21", blog_below21_list)
 lda_gensim_parse_post("Above 20", blog_above20_list)
-lda_gensim_parse_post("ALL ", blogs)
+lda_gensim_parse_post("Everyone ", blogs)
+
+
