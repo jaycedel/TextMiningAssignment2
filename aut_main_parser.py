@@ -10,7 +10,7 @@ from parse_file_name import parse_filename
 
 # START OF MAIN PROGRAM
 
-path = "../blogs3"  # FOLDER OF WHERE THE FILES ARE
+path = "../blogs2"  # FOLDER OF WHERE THE FILES ARE
 
 blogs_male = ""
 blogs_female = ""
@@ -61,9 +61,10 @@ for filename in os.listdir(path):
         # pass
 
 # lda_parse_post(blogs)
+
+#USING TF-IDF AND GENSIM TOPIC MODELING
 lda_gensim_parse_post("male", blog_male_list)
 lda_gensim_parse_post("female", blog_female_list)
-# parsePostBlog("Male", blog_male_list)
-# parsePostBlog("Female", blog_male_list)
-# parsePostBlog("Below 21", blog_below21_list)
-# parsePostBlog("Above 20", blog_above20_list)
+lda_gensim_parse_post("Below 21", blog_below21_list)
+lda_gensim_parse_post("Above 20", blog_above20_list)
+lda_gensim_parse_post("ALL ", blogs)
