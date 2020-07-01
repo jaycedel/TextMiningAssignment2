@@ -1,13 +1,11 @@
 # https://towardsdatascience.com/tf-idf-for-document-ranking-from-scratch-in-python-on-real-world-dataset-796d339a4089
 # https://github.com/susanli2016/NLP-with-Python/blob/master/NER_NLTK_Spacy.ipynb
 
-
 import os
 import xml.etree.ElementTree as ET
-import html.parser
 import nltk
-from nltk.corpus import stopwords
 from nltk.probability import FreqDist
+
 from xml_tags_cleaner import clean_xml_tags
 from parse_file_name import parse_filename
 from cleaner import clean_post
@@ -194,14 +192,14 @@ print('Most females are talking about')
 if female_key_person:
     print('People ' + str(FreqDist(female_key_person).most_common(1).pop(0)[0]) + ' with '
           + str(FreqDist(female_key_person).most_common(1).pop(0)[1]) + ' mention')
-
-if female_key_gsp:
-    print('Location ' + str(FreqDist(female_key_gsp).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(female_key_gsp).most_common(1).pop(0)[1]) + ' mention')
-
-if female_key_facility:
-    print('Facility ' + str(FreqDist(female_key_facility).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(female_key_facility).most_common(1).pop(0)[1]) + ' mention')
+#
+# if female_key_gsp:
+#     print('Location ' + str(FreqDist(female_key_gsp).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(female_key_gsp).most_common(1).pop(0)[1]) + ' mention')
+#
+# if female_key_facility:
+#     print('Facility ' + str(FreqDist(female_key_facility).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(female_key_facility).most_common(1).pop(0)[1]) + ' mention')
 
 # if female_key_organization:
 #     print('Unknown 1 ' + str(FreqDist(female_key_organization).most_common(1).pop(0)[0]) + ' with '
@@ -217,14 +215,14 @@ print('Most Below 20 are talking about')
 if below20_key_person:
     print('People ' + str(FreqDist(below20_key_person).most_common(1).pop(0)[0]) + ' with '
           + str(FreqDist(below20_key_person).most_common(1).pop(0)[1]) + ' mention')
-
-if below20_key_gsp:
-    print('Location ' + str(FreqDist(below20_key_gsp).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(below20_key_gsp).most_common(1).pop(0)[1]) + ' mention')
-
-if below20_key_facility:
-    print('Facility ' + str(FreqDist(below20_key_facility).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(below20_key_facility).most_common(1).pop(0)[1]) + ' mention')
+#
+# if below20_key_gsp:
+#     print('Location ' + str(FreqDist(below20_key_gsp).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(below20_key_gsp).most_common(1).pop(0)[1]) + ' mention')
+#
+# if below20_key_facility:
+#     print('Facility ' + str(FreqDist(below20_key_facility).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(below20_key_facility).most_common(1).pop(0)[1]) + ' mention')
 
 # if below20_key_organization:
 #     print('Unknown 1 ' + str(FreqDist(below20_key_organization).most_common(1).pop(0)[0]) + ' with '
@@ -240,14 +238,14 @@ print('Most Above 20 are talking about')
 if above20_key_person:
     print('People ' + str(FreqDist(above20_key_person).most_common(1).pop(0)[0]) + ' with '
           + str(FreqDist(above20_key_person).most_common(1).pop(0)[1]) + ' mention')
-
-if above20_key_gsp:
-    print('Location ' + str(FreqDist(above20_key_gsp).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(above20_key_gsp).most_common(1).pop(0)[1]) + ' mention')
-
-if above20_key_facility:
-    print('Facility ' + str(FreqDist(above20_key_facility).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(above20_key_facility).most_common(1).pop(0)[1]) + ' mention')
+#
+# if above20_key_gsp:
+#     print('Location ' + str(FreqDist(above20_key_gsp).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(above20_key_gsp).most_common(1).pop(0)[1]) + ' mention')
+#
+# if above20_key_facility:
+#     print('Facility ' + str(FreqDist(above20_key_facility).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(above20_key_facility).most_common(1).pop(0)[1]) + ' mention')
 
 # if above20_key_organization:
 #     print('Unknown 1 ' + str(FreqDist(above20_key_organization).most_common(1).pop(0)[0]) + ' with '
@@ -263,14 +261,14 @@ print('People are talking about')
 if key_person:
     print('People ' + str(FreqDist(key_person).most_common(1).pop(0)[0]) + ' with '
           + str(FreqDist(key_person).most_common(1).pop(0)[1]) + ' mention')
-
-if key_gsp:
-    print('Location ' + str(FreqDist(key_gsp).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(key_gsp).most_common(1).pop(0)[1]) + ' mention')
-
-if key_facility:
-    print('Facility ' + str(FreqDist(key_facility).most_common(1).pop(0)[0]) + ' with '
-          + str(FreqDist(key_facility).most_common(1).pop(0)[1]) + ' mention')
+#
+# if key_gsp:
+#     print('Location ' + str(FreqDist(key_gsp).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(key_gsp).most_common(1).pop(0)[1]) + ' mention')
+#
+# if key_facility:
+#     print('Facility ' + str(FreqDist(key_facility).most_common(1).pop(0)[0]) + ' with '
+#           + str(FreqDist(key_facility).most_common(1).pop(0)[1]) + ' mention')
 
 # if key_organization:
 #     print('Unknown 1 ' + str(FreqDist(key_organization).most_common(1).pop(0)[0]) + ' with '
