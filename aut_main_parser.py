@@ -62,7 +62,7 @@ for filename in os.listdir(path):
 
 # lda_parse_post(blogs)
 
-#USING TF-IDF AND GENSIM TOPIC MODELING
+#USING TF-IDF USING GENSIM TOPIC MODELING
 lda_gensim_parse_post("male", blog_male_list)
 lda_gensim_parse_post("female", blog_female_list)
 lda_gensim_parse_post("Below 21", blog_below21_list)
